@@ -50,7 +50,7 @@ public class EmployeeController {
 
 
     @PutMapping("/employees/{id}")
-    Resource<Employee> updateEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
+    ResponseEntity<?> updateEmployee(@RequestBody Employee newEmployee, @PathVariable Long id) {
         Resource<Employee> resource = assembler.toResource(
                 repository.findById(id).map( employee -> {
                     employee.setFirstName(newEmployee.getFirstName());
@@ -63,12 +63,14 @@ public class EmployeeController {
                     return repository.save(newEmployee);
                 }));
 
-        return resource;
+        return ResponseEntity.ok(resource);
     }
 
     @DeleteMapping("/employees/{id}")
-    void deleteEmployee(@PathVariable Long id) {
+    ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
         repository.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 
 }
