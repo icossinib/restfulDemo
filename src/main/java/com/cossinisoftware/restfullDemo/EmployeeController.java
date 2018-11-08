@@ -1,5 +1,6 @@
 package com.cossinisoftware.restfullDemo;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.Resource;
 import org.springframework.hateoas.Resources;
 import org.springframework.http.ResponseEntity;
@@ -68,7 +69,11 @@ public class EmployeeController {
 
     @DeleteMapping("/employees/{id}")
     ResponseEntity<?> deleteEmployee(@PathVariable Long id) {
-        repository.deleteById(id);
+        try {
+            repository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new EmployeeNotFoundException(id);
+        }
 
         return ResponseEntity.noContent().build();
     }
